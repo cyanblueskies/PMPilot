@@ -1,0 +1,25 @@
+services:
+  db:
+    image: postgres:17
+    container_name: pmpilot-db
+    environment:
+      POSTGRES_USER: pmpilot
+      POSTGRES_PASSWORD: pmpilot_dev
+      POSTGRES_DB: pmpilot
+    # 5433 on the host so a locally-installed Postgres (if one ever appears)
+    # can't silently shadow this one.
+    ports:
+      - "5433:5432"
+    volumes:
+      - pmpilot_pgdata:/var/lib/postgresql/data
+      # Runs once, on first init only. Creates the read-only role that NL2SQL
+      # executes against — see .claude/rules/security.md.
+      - ./docker/init-readonly.sql:/docker-entrypoint-initdb.d/10-readonly.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pmpilot -d pmpilot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pmpilot_pgdata:
