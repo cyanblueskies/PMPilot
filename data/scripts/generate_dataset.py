@@ -11,6 +11,11 @@ import pandas as pd
 
 ISSUE_TYPES = ["Story", "Bug", "Task", "Sub-task"]
 ISSUE_TYPE_WEIGHTS = [0.45, 0.25, 0.25, 0.05]
+# Drawn from only when the bug_rate roll already said "not a bug". Keeping Bug
+# in this pool double-counted it: bug_rate 0.25 produced a 44% defect ratio,
+# which is not a plausible baseline for a healthy project.
+NON_BUG_TYPES = ["Story", "Task", "Sub-task"]
+NON_BUG_WEIGHTS = [0.60, 0.3333, 0.0667]
 PRIORITIES = ["Highest", "High", "Medium", "Low", "Lowest"]
 PRIORITY_WEIGHTS = [0.05, 0.20, 0.50, 0.20, 0.05]
 STORY_POINTS = [1, 2, 3, 5, 8, 13]
@@ -162,7 +167,9 @@ def generate(cfg: Config) -> tuple[pd.DataFrame, dict]:
                 assignee = team[int(rng.integers(len(team)))]
 
             is_bug = rng.random() < cfg.bug_rate
-            issue_type = "Bug" if is_bug else _pick(rng, ISSUE_TYPES, ISSUE_TYPE_WEIGHTS)
+            issue_type = (
+                "Bug" if is_bug else _pick(rng, NON_BUG_TYPES, NON_BUG_WEIGHTS)
+            )
             points = _pick(rng, STORY_POINTS, STORY_POINT_WEIGHTS)
 
             created = sprint_start + timedelta(
@@ -199,6 +206,25 @@ def generate(cfg: Config) -> tuple[pd.DataFrame, dict]:
             ):
                 anomaly.issue_keys.append(key)
 
+            # When work actually began, as distinct from when the issue was
+            # raised. Real Jira CSV exports rarely carry this — it lives in the
+            # status-change history — but without it cycle time cannot be
+            # separated from lead time, and FR-B3's "<1% error" acceptance
+            # criterion has nothing to be checked against. Emitting it keeps the
+            # two metrics genuinely distinct; ingestion degrades gracefully when
+            # a real upload lacks the column.
+            started = None
+            if status == "Done":
+                # Some time in the backlog first, then work starts.
+                started = created + timedelta(
+                    seconds=float(
+                        rng.uniform(0.05, 0.50)
+                        * (resolved - created).total_seconds()
+                    )
+                )
+            elif status in ("In Progress", "Blocked"):
+                started = created + timedelta(hours=float(rng.uniform(2, 72)))
+
             n_labels = int(rng.integers(0, 3))
             labels = rng.choice(LABEL_POOL, size=n_labels, replace=False).tolist()
             estimate = points * 4 * 3600
@@ -215,6 +241,7 @@ def generate(cfg: Config) -> tuple[pd.DataFrame, dict]:
                     "Story Points": points,
                     "Sprint": sprint_name,
                     "Created Date": _iso(created),
+                    "In Progress Date": _iso(started) if started else "",
                     "Resolved Date": _iso(resolved) if resolved else "",
                     "Due Date": _iso(due),
                     "Labels": ",".join(labels),

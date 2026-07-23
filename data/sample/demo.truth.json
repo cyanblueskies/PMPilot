@@ -1,6 +1,6 @@
 {
   "generator": "FR-A4",
-  "generated_at": "2026-07-23T03:37:38.578977+00:00",
+  "generated_at": "2026-07-23T08:46:00.985192+00:00",
   "config": {
     "seed": 42,
     "sprints": 12,
@@ -15,71 +15,71 @@
     "start_date": "2026-01-05"
   },
   "totals": {
-    "issues": 503,
+    "issues": 511,
     "sprints": 12,
-    "done": 370,
-    "blocked": 31
+    "done": 372,
+    "blocked": 33
   },
   "per_sprint": {
     "Sprint 1": {
-      "velocity": 101,
+      "velocity": 107,
       "blocked": 2,
-      "overdue_at_sprint_end": 8
+      "overdue_at_sprint_end": 5
     },
     "Sprint 2": {
-      "velocity": 163,
-      "blocked": 4,
+      "velocity": 130,
+      "blocked": 2,
       "overdue_at_sprint_end": 9
     },
     "Sprint 3": {
-      "velocity": 22,
-      "blocked": 0,
-      "overdue_at_sprint_end": 26
+      "velocity": 33,
+      "blocked": 1,
+      "overdue_at_sprint_end": 32
     },
     "Sprint 4": {
-      "velocity": 171,
+      "velocity": 142,
       "blocked": 1,
       "overdue_at_sprint_end": 5
     },
     "Sprint 5": {
-      "velocity": 111,
-      "blocked": 3,
-      "overdue_at_sprint_end": 7
+      "velocity": 128,
+      "blocked": 2,
+      "overdue_at_sprint_end": 4
     },
     "Sprint 6": {
-      "velocity": 77,
+      "velocity": 90,
       "blocked": 3,
-      "overdue_at_sprint_end": 11
-    },
-    "Sprint 7": {
-      "velocity": 141,
-      "blocked": 0,
       "overdue_at_sprint_end": 8
     },
+    "Sprint 7": {
+      "velocity": 95,
+      "blocked": 2,
+      "overdue_at_sprint_end": 10
+    },
     "Sprint 8": {
-      "velocity": 129,
-      "blocked": 0,
-      "overdue_at_sprint_end": 7
+      "velocity": 120,
+      "blocked": 3,
+      "overdue_at_sprint_end": 6
     },
     "Sprint 9": {
-      "velocity": 163,
-      "blocked": 1,
-      "overdue_at_sprint_end": 25
+      "velocity": 119,
+      "blocked": 3,
+      "overdue_at_sprint_end": 34
     },
     "Sprint 10": {
-      "velocity": 142,
-      "blocked": 2,
+      "velocity": 119,
+      "blocked": 3,
       "overdue_at_sprint_end": 8
     },
     "Sprint 11": {
-      "velocity": 119,
-      "blocked": 2,
-      "overdue_at_sprint_end": 6
+      "velocity": 122,
+      "blocked": 1,
+      "overdue_at_sprint_end": 8
     },
     "Sprint 12": {
-      "velocity": 143,
-      "blocked": 13,
-      "overdue_at_sprint_end": 13
+      "velocity": 128,
+      "blocked": 10,
+      "overdue_at_sprint_end": 10
     }
   },
   "anomalies": [
@@ -89,7 +89,7 @@
       "type": "velocity_drop",
       "params": {
         "baseline_completion_rate": 0.82,
-        "injected_completion_rate": 0.279
+        "injected_completion_rate": 0.196
       },
       "issue_keys": []
     },
@@ -98,25 +98,36 @@
       "sprint_index": 8,
       "type": "overdue_pileup",
       "params": {
-        "scope_factor": 1.673,
+        "scope_factor": 1.847,
         "baseline_completion_rate": 0.82,
-        "injected_completion_rate": 0.49,
-        "injected_overdue_rate": 0.622
+        "injected_completion_rate": 0.444,
+        "injected_overdue_rate": 0.669
       },
       "issue_keys": [
-        "PM-315",
-        "PM-316",
-        "PM-323",
-        "PM-325",
+        "PM-326",
+        "PM-327",
         "PM-328",
-        "PM-340",
-        "PM-343",
-        "PM-352",
-        "PM-354",
+        "PM-331",
+        "PM-334",
+        "PM-335",
+        "PM-336",
+        "PM-338",
+        "PM-346",
+        "PM-348",
+        "PM-350",
+        "PM-351",
+        "PM-356",
         "PM-357",
-        "PM-359",
-        "PM-363",
-        "PM-374"
+        "PM-360",
+        "PM-362",
+        "PM-366",
+        "PM-371",
+        "PM-374",
+        "PM-375",
+        "PM-376",
+        "PM-380",
+        "PM-383",
+        "PM-386"
       ]
     },
     {
@@ -125,23 +136,20 @@
       "type": "blocked_cluster",
       "params": {
         "baseline_blocked_rate": 0.05,
-        "injected_blocked_rate": 0.433,
-        "concentrated_on": "user6"
+        "injected_blocked_rate": 0.336,
+        "concentrated_on": "user1"
       },
       "issue_keys": [
-        "PM-466",
-        "PM-467",
-        "PM-469",
-        "PM-473",
-        "PM-474",
-        "PM-475",
-        "PM-477",
-        "PM-478",
-        "PM-481",
-        "PM-489",
-        "PM-493",
+        "PM-472",
+        "PM-486",
+        "PM-487",
         "PM-495",
-        "PM-497"
+        "PM-498",
+        "PM-499",
+        "PM-506",
+        "PM-507",
+        "PM-509",
+        "PM-511"
       ]
     }
   ]

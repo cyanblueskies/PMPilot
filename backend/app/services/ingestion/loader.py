@@ -27,7 +27,7 @@ ALLOWED_EXTENSIONS = (".csv", ".xlsx")
 MAX_FILE_BYTES = 20 * 1024 * 1024
 MAX_ROWS = 20_000
 
-DATE_FIELDS = ("created_date", "resolved_date", "due_date")
+DATE_FIELDS = ("created_date", "started_date", "resolved_date", "due_date")
 NUMERIC_FIELDS = ("story_points", "original_estimate", "time_spent")
 TEXT_FIELDS = (
     "issue_key",

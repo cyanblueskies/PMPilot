@@ -90,6 +90,7 @@ def persist(session: Session, project: Project, result: IngestResult) -> int:
                 priority=_optional(row, "priority"),
                 story_points=float(story_points) if story_points is not None else None,
                 created_date=_optional(row, "created_date"),
+                started_date=_optional(row, "started_date"),
                 resolved_date=_optional(row, "resolved_date"),
                 due_date=_optional(row, "due_date"),
                 labels=_optional(row, "labels"),

@@ -29,6 +29,16 @@ FIELD_ALIASES: dict[str, tuple[str, ...]] = {
     ),
     "sprint": ("sprint", "sprint name", "iteration"),
     "created_date": ("created date", "created", "created at"),
+    # When work began, as distinct from when the issue was raised. Standard Jira
+    # CSV exports usually omit it (it lives in the status-change history), so
+    # cycle time degrades gracefully when it is absent.
+    "started_date": (
+        "in progress date",
+        "started date",
+        "started",
+        "start date",
+        "work started",
+    ),
     "resolved_date": ("resolved date", "resolved", "resolution date", "done date"),
     "due_date": ("due date", "due", "duedate"),
     "labels": ("labels", "label", "tags"),
@@ -53,7 +63,8 @@ REQUIRED_FIELDS = ("issue_key", "status", "sprint")
 # Reported back so the user learns it here rather than from an empty chart.
 FIELD_ENABLES: dict[str, str] = {
     "story_points": "velocity, scope creep",
-    "created_date": "cycle time, lead time",
+    "created_date": "lead time",
+    "started_date": "cycle time",
     "resolved_date": "cycle time, lead time",
     "due_date": "overdue detection",
     "issue_type": "defect density",

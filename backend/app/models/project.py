@@ -95,6 +95,10 @@ class Issue(Base):
     story_points: Mapped[float | None]
 
     created_date: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # When work began. Separates cycle time (started -> resolved) from lead time
+    # (created -> resolved). Frequently absent from real Jira exports, so every
+    # consumer must treat it as optional.
+    started_date: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     resolved_date: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     due_date: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
