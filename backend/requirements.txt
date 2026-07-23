@@ -28,11 +28,17 @@ python-dateutil==2.9.0.post0
 # XLSX reading for FR-A1. Formulas are read as text; nothing is evaluated.
 openpyxl==3.1.5
 
+# --- Generative track ---
+# Official SDK, not an OpenAI-compatible shim. The model id is pinned in .env
+# and read only through core/config (.claude/rules/experiment.md).
+anthropic==0.118.0
+# SQL parsing for FR-D1. The SELECT-only whitelist is enforced on a parsed AST;
+# string-matching for DROP/DELETE is not a control (.claude/rules/security.md).
+sqlglot==30.13.0
+
 # --- Test ---
 pytest==9.1.1
 httpx==0.28.1
 
-# Not yet needed — add when the work requiring it starts:
-#   anthropic        FR-D2, W13
 # Deliberately absent until every Must is complete (.claude/rules/scope.md):
 #   pgvector / embedding libraries / any vector store   FR-D4
