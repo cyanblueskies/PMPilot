@@ -35,6 +35,10 @@ jobs:
     env:
       DATABASE_URL: postgresql+psycopg2://pmpilot:pmpilot_dev@localhost:5432/pmpilot
       DATABASE_URL_READONLY: postgresql+psycopg2://pmpilot_ro:pmpilot_ro_dev@localhost:5432/pmpilot
+      # Database-backed tests skip when no database is reachable, so `pytest`
+      # works locally without Docker. Here a database always exists, so a skip
+      # would mean they quietly stopped running — this turns it into a failure.
+      PMPILOT_REQUIRE_DB: "1"
 
     steps:
       - uses: actions/checkout@v4

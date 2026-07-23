@@ -12,12 +12,28 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import Base, utc_now_column
 
 
+INGEST_PROCESSING = "processing"
+INGEST_READY = "ready"
+INGEST_FAILED = "failed"
+
+
 class Project(Base):
     __tablename__ = "projects"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(200), nullable=False)
     source_filename: Mapped[str | None] = mapped_column(String(500))
+
+    # Upload parses synchronously (so a bad file fails immediately) but persists
+    # in the background, and later the same task will run KPI computation and
+    # anomaly detection. The client polls this rather than holding the request
+    # open — see .claude/rules/data-model.md.
+    ingest_status: Mapped[str] = mapped_column(
+        String(20), nullable=False, default=INGEST_PROCESSING
+    )
+    ingest_error: Mapped[str | None] = mapped_column(Text)
+    issue_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
     created_at: Mapped[datetime] = utc_now_column()
 
     sprints: Mapped[list["Sprint"]] = relationship(
