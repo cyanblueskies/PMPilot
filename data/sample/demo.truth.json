@@ -1,0 +1,148 @@
+{
+  "generator": "FR-A4",
+  "generated_at": "2026-07-23T03:37:38.578977+00:00",
+  "config": {
+    "seed": 42,
+    "sprints": 12,
+    "sprint_days": 14,
+    "team_size": 6,
+    "issues_per_sprint": 40,
+    "issues_per_sprint_sd": 3.0,
+    "completion_rate": 0.82,
+    "blocked_rate": 0.05,
+    "bug_rate": 0.25,
+    "anomaly_rate": 0.25,
+    "start_date": "2026-01-05"
+  },
+  "totals": {
+    "issues": 503,
+    "sprints": 12,
+    "done": 370,
+    "blocked": 31
+  },
+  "per_sprint": {
+    "Sprint 1": {
+      "velocity": 101,
+      "blocked": 2,
+      "overdue_at_sprint_end": 8
+    },
+    "Sprint 2": {
+      "velocity": 163,
+      "blocked": 4,
+      "overdue_at_sprint_end": 9
+    },
+    "Sprint 3": {
+      "velocity": 22,
+      "blocked": 0,
+      "overdue_at_sprint_end": 26
+    },
+    "Sprint 4": {
+      "velocity": 171,
+      "blocked": 1,
+      "overdue_at_sprint_end": 5
+    },
+    "Sprint 5": {
+      "velocity": 111,
+      "blocked": 3,
+      "overdue_at_sprint_end": 7
+    },
+    "Sprint 6": {
+      "velocity": 77,
+      "blocked": 3,
+      "overdue_at_sprint_end": 11
+    },
+    "Sprint 7": {
+      "velocity": 141,
+      "blocked": 0,
+      "overdue_at_sprint_end": 8
+    },
+    "Sprint 8": {
+      "velocity": 129,
+      "blocked": 0,
+      "overdue_at_sprint_end": 7
+    },
+    "Sprint 9": {
+      "velocity": 163,
+      "blocked": 1,
+      "overdue_at_sprint_end": 25
+    },
+    "Sprint 10": {
+      "velocity": 142,
+      "blocked": 2,
+      "overdue_at_sprint_end": 8
+    },
+    "Sprint 11": {
+      "velocity": 119,
+      "blocked": 2,
+      "overdue_at_sprint_end": 6
+    },
+    "Sprint 12": {
+      "velocity": 143,
+      "blocked": 13,
+      "overdue_at_sprint_end": 13
+    }
+  },
+  "anomalies": [
+    {
+      "sprint": "Sprint 3",
+      "sprint_index": 2,
+      "type": "velocity_drop",
+      "params": {
+        "baseline_completion_rate": 0.82,
+        "injected_completion_rate": 0.279
+      },
+      "issue_keys": []
+    },
+    {
+      "sprint": "Sprint 9",
+      "sprint_index": 8,
+      "type": "overdue_pileup",
+      "params": {
+        "scope_factor": 1.673,
+        "baseline_completion_rate": 0.82,
+        "injected_completion_rate": 0.49,
+        "injected_overdue_rate": 0.622
+      },
+      "issue_keys": [
+        "PM-315",
+        "PM-316",
+        "PM-323",
+        "PM-325",
+        "PM-328",
+        "PM-340",
+        "PM-343",
+        "PM-352",
+        "PM-354",
+        "PM-357",
+        "PM-359",
+        "PM-363",
+        "PM-374"
+      ]
+    },
+    {
+      "sprint": "Sprint 12",
+      "sprint_index": 11,
+      "type": "blocked_cluster",
+      "params": {
+        "baseline_blocked_rate": 0.05,
+        "injected_blocked_rate": 0.433,
+        "concentrated_on": "user6"
+      },
+      "issue_keys": [
+        "PM-466",
+        "PM-467",
+        "PM-469",
+        "PM-473",
+        "PM-474",
+        "PM-475",
+        "PM-477",
+        "PM-478",
+        "PM-481",
+        "PM-489",
+        "PM-493",
+        "PM-495",
+        "PM-497"
+      ]
+    }
+  ]
+}
