@@ -1,0 +1,12 @@
+# Normalise line endings. Without this, files authored on Windows land in the
+# repo with CRLF and every checkout on a Linux CI runner shows spurious diffs.
+* text=auto eol=lf
+
+# Binary — never touch.
+*.png binary
+*.jpg binary
+*.pdf binary
+*.xlsx binary
+
+# Generated fixtures: keep out of diffs, they are regenerable from the seed.
+data/sample/*.csv -diff

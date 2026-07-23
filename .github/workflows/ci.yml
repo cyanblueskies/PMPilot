@@ -1,0 +1,151 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+
+    services:
+      # Mirrors docker-compose.yml. Kept on 5432 here — the 5433 host mapping
+      # exists only to avoid clashing with a local Postgres on a dev machine,
+      # and there is nothing to clash with on a runner.
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: pmpilot
+          POSTGRES_PASSWORD: pmpilot_dev
+          POSTGRES_DB: pmpilot
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U pmpilot -d pmpilot"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql+psycopg2://pmpilot:pmpilot_dev@localhost:5432/pmpilot
+      DATABASE_URL_READONLY: postgresql+psycopg2://pmpilot_ro:pmpilot_ro_dev@localhost:5432/pmpilot
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11.9"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        working-directory: backend
+        run: pip install -r requirements.txt
+
+      - name: Create read-only role
+        # docker-compose mounts this via /docker-entrypoint-initdb.d, which
+        # service containers cannot do — so it runs explicitly here. Keeping CI
+        # and local identical matters: the read-only role is the layer that
+        # holds if NL2SQL's statement whitelist is ever bypassed.
+        run: psql "$PGURL" -v ON_ERROR_STOP=1 -f docker/init-readonly.sql
+        env:
+          PGURL: postgresql://pmpilot:pmpilot_dev@localhost:5432/pmpilot
+
+      - name: Run migrations
+        working-directory: backend
+        run: alembic upgrade head
+
+      - name: Verify migrations match the models
+        # Catches a model edited without a matching migration. Exits non-zero if
+        # autogenerate against the migrated database would still produce
+        # operations, i.e. the two have drifted.
+        working-directory: backend
+        run: alembic check
+
+      - name: Verify the read-only role cannot write
+        # A security control that is never exercised is a security control that
+        # silently regresses.
+        run: |
+          if psql "$PGURL_RO" -v ON_ERROR_STOP=1 \
+              -c "insert into projects(name) values ('ci-write-probe')" 2>/dev/null; then
+            echo "FAIL: read-only role was able to write"
+            exit 1
+          fi
+          echo "read-only role correctly rejected the write"
+        env:
+          PGURL_RO: postgresql://pmpilot_ro:pmpilot_ro_dev@localhost:5432/pmpilot
+
+      - name: Tests
+        working-directory: backend
+        run: pytest
+
+  data-generator:
+    # FR-A4 output feeds every evaluation number in the dissertation. If the
+    # same seed stops producing the same bytes, those numbers stop being
+    # reproducible — so the property is asserted, not assumed.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11.9"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r backend/requirements.txt
+
+      - name: Same seed produces identical output
+        run: |
+          python data/scripts/generate_dataset.py --seed 42 --name ci_a --out /tmp/gen
+          python data/scripts/generate_dataset.py --seed 42 --name ci_b --out /tmp/gen
+          diff /tmp/gen/ci_a.csv /tmp/gen/ci_b.csv
+          echo "deterministic"
+
+      - name: Different seed produces different output
+        run: |
+          python data/scripts/generate_dataset.py --seed 7 --name ci_c --out /tmp/gen
+          if diff -q /tmp/gen/ci_a.csv /tmp/gen/ci_c.csv >/dev/null; then
+            echo "FAIL: seed is not being used"
+            exit 1
+          fi
+          echo "seed is honoured"
+
+      - name: Every anomaly type is represented
+        # Round-robin type assignment guarantees coverage. Without it a run can
+        # omit a type entirely, leaving that detector unscoreable.
+        run: |
+          python - <<'PY'
+          import json
+          m = json.load(open("/tmp/gen/ci_a.truth.json"))
+          types = {a["type"] for a in m["anomalies"]}
+          expected = {"velocity_drop", "overdue_pileup", "blocked_cluster"}
+          assert types == expected, f"missing anomaly types: {expected - types}"
+          print("all three anomaly types present")
+          PY
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
