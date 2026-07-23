@@ -16,6 +16,7 @@ from app.models.project import (
     Project,
 )
 from app.schemas.dataset import ProjectStatus, UploadAccepted
+from app.services.analytics import run_analysis
 from app.services.ingestion import (
     MAX_FILE_BYTES,
     IngestResult,
@@ -29,11 +30,16 @@ router = APIRouter(tags=["datasets"])
 
 
 def _persist_in_background(project_id: int, result: IngestResult) -> None:
-    """Write rows after the response has been sent.
+    """Write rows, then compute KPIs and detect anomalies.
 
     Opens its own session: the request-scoped one is closed by the time this
     runs. Any failure is recorded on the project rather than raised into a
     void, so a client polling status learns what happened.
+
+    Analysis runs here rather than lazily on first dashboard request so that
+    `kpi_snapshots` and `anomalies` are always written. They are Must-tier
+    evaluation instrumentation, not a cache, and a lazily-populated table is one
+    that can quietly end up empty (.claude/rules/data-model.md).
     """
     session = SessionLocal()
     try:
@@ -43,6 +49,9 @@ def _persist_in_background(project_id: int, result: IngestResult) -> None:
         try:
             count = persist(session, project, result)
             project.issue_count = count
+            session.flush()
+
+            run_analysis(session, project_id)
             project.ingest_status = INGEST_READY
         except Exception as exc:  # noqa: BLE001
             session.rollback()

@@ -2,6 +2,7 @@
 
 from fastapi import FastAPI
 
+from app.api.dashboard import router as dashboard_router
 from app.api.datasets import router as datasets_router
 from app.api.health import router as health_router
 from app.core.config import get_settings
@@ -19,3 +20,4 @@ app = FastAPI(
 
 app.include_router(health_router, prefix="/api")
 app.include_router(datasets_router, prefix="/api")
+app.include_router(dashboard_router, prefix="/api")

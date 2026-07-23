@@ -11,6 +11,12 @@ from app.services.analytics.burndown import (
     compute_burndown,
 )
 from app.services.analytics.frame import COLUMNS, ensure_frame, load_project_frame
+from app.services.analytics.pipeline import (
+    ProjectAnalysis,
+    analyse,
+    persist_analysis,
+    run_analysis,
+)
 from app.services.analytics.kpi import (
     DefectReport,
     DurationReport,
@@ -34,6 +40,10 @@ __all__ = [
     "compute_cycle_time",
     "compute_lead_time",
     "compute_burndown",
+    "analyse",
+    "run_analysis",
+    "persist_analysis",
+    "ProjectAnalysis",
     "BurndownReport",
     "SprintBurndown",
     "BurndownPoint",
