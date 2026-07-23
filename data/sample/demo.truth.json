@@ -1,6 +1,6 @@
 {
   "generator": "FR-A4",
-  "generated_at": "2026-07-23T08:46:00.985192+00:00",
+  "generated_at": "2026-07-23T09:05:40.002464+00:00",
   "config": {
     "seed": 42,
     "sprints": 12,
@@ -11,75 +11,76 @@
     "completion_rate": 0.82,
     "blocked_rate": 0.05,
     "bug_rate": 0.25,
+    "mid_sprint_rate": 0.15,
     "anomaly_rate": 0.25,
     "start_date": "2026-01-05"
   },
   "totals": {
-    "issues": 511,
+    "issues": 492,
     "sprints": 12,
-    "done": 372,
-    "blocked": 33
+    "done": 352,
+    "blocked": 38
   },
   "per_sprint": {
     "Sprint 1": {
-      "velocity": 107,
-      "blocked": 2,
+      "velocity": 93,
+      "blocked": 1,
       "overdue_at_sprint_end": 5
     },
     "Sprint 2": {
-      "velocity": 130,
-      "blocked": 2,
-      "overdue_at_sprint_end": 9
+      "velocity": 127,
+      "blocked": 3,
+      "overdue_at_sprint_end": 6
     },
     "Sprint 3": {
-      "velocity": 33,
+      "velocity": 28,
       "blocked": 1,
-      "overdue_at_sprint_end": 32
+      "overdue_at_sprint_end": 28
     },
     "Sprint 4": {
-      "velocity": 142,
-      "blocked": 1,
-      "overdue_at_sprint_end": 5
+      "velocity": 151,
+      "blocked": 2,
+      "overdue_at_sprint_end": 7
     },
     "Sprint 5": {
-      "velocity": 128,
+      "velocity": 143,
       "blocked": 2,
       "overdue_at_sprint_end": 4
     },
     "Sprint 6": {
-      "velocity": 90,
+      "velocity": 95,
       "blocked": 3,
-      "overdue_at_sprint_end": 8
+      "overdue_at_sprint_end": 10
     },
     "Sprint 7": {
-      "velocity": 95,
+      "velocity": 144,
       "blocked": 2,
       "overdue_at_sprint_end": 10
     },
     "Sprint 8": {
-      "velocity": 120,
+      "velocity": 126,
       "blocked": 3,
-      "overdue_at_sprint_end": 6
+      "overdue_at_sprint_end": 12
     },
     "Sprint 9": {
-      "velocity": 119,
-      "blocked": 3,
-      "overdue_at_sprint_end": 34
+      "velocity": 130,
+      "blocked": 1,
+      "overdue_at_sprint_end": 29
     },
     "Sprint 10": {
-      "velocity": 119,
+      "velocity": 124,
       "blocked": 3,
-      "overdue_at_sprint_end": 8
+      "overdue_at_sprint_end": 7
     },
     "Sprint 11": {
-      "velocity": 122,
+      "velocity": 149,
       "blocked": 1,
-      "overdue_at_sprint_end": 8
+      "overdue_at_sprint_end": 6
     },
     "Sprint 12": {
-      "velocity": 128,
-      "blocked": 10,
-      "overdue_at_sprint_end": 10
+      "velocity": 67,
+      "blocked": 16,
+      "overdue_at_sprint_end": 16
     }
   },
   "anomalies": [
@@ -89,7 +90,7 @@
       "type": "velocity_drop",
       "params": {
         "baseline_completion_rate": 0.82,
-        "injected_completion_rate": 0.196
+        "injected_completion_rate": 0.202
       },
       "issue_keys": []
     },
@@ -98,36 +99,36 @@
       "sprint_index": 8,
       "type": "overdue_pileup",
       "params": {
-        "scope_factor": 1.847,
+        "scope_factor": 1.693,
+        "mid_sprint_rate": 0.61,
         "baseline_completion_rate": 0.82,
-        "injected_completion_rate": 0.444,
-        "injected_overdue_rate": 0.669
+        "injected_completion_rate": 0.484,
+        "injected_overdue_rate": 0.79
       },
       "issue_keys": [
+        "PM-311",
+        "PM-314",
+        "PM-315",
+        "PM-317",
+        "PM-318",
+        "PM-319",
+        "PM-322",
         "PM-326",
         "PM-327",
-        "PM-328",
         "PM-331",
-        "PM-334",
-        "PM-335",
-        "PM-336",
-        "PM-338",
+        "PM-340",
+        "PM-341",
+        "PM-343",
+        "PM-345",
         "PM-346",
-        "PM-348",
+        "PM-349",
         "PM-350",
-        "PM-351",
-        "PM-356",
+        "PM-352",
         "PM-357",
         "PM-360",
-        "PM-362",
-        "PM-366",
-        "PM-371",
-        "PM-374",
-        "PM-375",
-        "PM-376",
-        "PM-380",
-        "PM-383",
-        "PM-386"
+        "PM-363",
+        "PM-365",
+        "PM-368"
       ]
     },
     {
@@ -136,20 +137,26 @@
       "type": "blocked_cluster",
       "params": {
         "baseline_blocked_rate": 0.05,
-        "injected_blocked_rate": 0.336,
-        "concentrated_on": "user1"
+        "injected_blocked_rate": 0.429,
+        "concentrated_on": "user6"
       },
       "issue_keys": [
-        "PM-472",
+        "PM-454",
+        "PM-456",
+        "PM-457",
+        "PM-458",
+        "PM-460",
+        "PM-464",
+        "PM-467",
+        "PM-468",
+        "PM-471",
+        "PM-476",
+        "PM-479",
         "PM-486",
-        "PM-487",
-        "PM-495",
-        "PM-498",
-        "PM-499",
-        "PM-506",
-        "PM-507",
-        "PM-509",
-        "PM-511"
+        "PM-488",
+        "PM-490",
+        "PM-491",
+        "PM-492"
       ]
     }
   ]

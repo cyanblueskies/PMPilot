@@ -45,6 +45,9 @@ class Config:
     completion_rate: float = 0.82
     blocked_rate: float = 0.05
     bug_rate: float = 0.25
+    # Share of issues raised after the sprint has already started, i.e. the
+    # baseline level of scope creep a healthy team lives with.
+    mid_sprint_rate: float = 0.15
     anomaly_rate: float = 0.25
     start_date: str = "2026-01-05"
 
@@ -120,6 +123,7 @@ def generate(cfg: Config) -> tuple[pd.DataFrame, dict]:
         blocked_rate = cfg.blocked_rate
         overdue_rate = 0.05
         blocked_victim = None
+        mid_sprint_rate = cfg.mid_sprint_rate
 
         if anomaly is not None:
             if anomaly.type == "velocity_drop":
@@ -141,8 +145,12 @@ def generate(cfg: Config) -> tuple[pd.DataFrame, dict]:
                 n_issues = int(round(n_issues * scope_factor))
                 completion_rate = cfg.completion_rate / scope_factor
                 overdue_rate = float(rng.uniform(0.60, 0.80))
+                # The extra work arrives after the sprint is under way — that is
+                # what makes it a pileup rather than a badly planned sprint.
+                mid_sprint_rate = float(rng.uniform(0.45, 0.65))
                 anomaly.params = {
                     "scope_factor": round(scope_factor, 3),
+                    "mid_sprint_rate": round(mid_sprint_rate, 3),
                     "baseline_completion_rate": round(cfg.completion_rate, 3),
                     "injected_completion_rate": round(completion_rate, 3),
                     "injected_overdue_rate": round(overdue_rate, 3),
@@ -172,28 +180,60 @@ def generate(cfg: Config) -> tuple[pd.DataFrame, dict]:
             )
             points = _pick(rng, STORY_POINTS, STORY_POINT_WEIGHTS)
 
-            created = sprint_start + timedelta(
-                hours=float(rng.uniform(0, cfg.sprint_days * 24 * 0.6))
-            )
+            # Most work is planned before the sprint starts and waits in the
+            # backlog; only a minority is added once the sprint is underway.
+            # Creating everything mid-sprint made ~85% of scope look "added
+            # late", which destroys the burnup scope line and would make the
+            # FR-B5 scope-creep metric meaningless.
+            if rng.random() < mid_sprint_rate:
+                created = sprint_start + timedelta(
+                    hours=float(rng.uniform(1, cfg.sprint_days * 24 * 0.7))
+                )
+            else:
+                created = sprint_start - timedelta(
+                    days=float(rng.uniform(0.5, 12.0))
+                )
             due = sprint_start + timedelta(
                 days=float(rng.uniform(cfg.sprint_days * 0.4, cfg.sprint_days))
             )
 
+            # Work cannot begin before the sprint does, however long the issue
+            # sat in the backlog. Everything below is derived from this rather
+            # than from `created`, which guarantees started <= resolved: when
+            # resolution was derived from creation instead, a backlog item
+            # could resolve before its own start and produce a negative cycle
+            # time that the KPI engine then had to discard.
+            earliest_start = max(created, sprint_start)
+
             is_overdue = False
+            started = None
+            resolved = None
+
             roll = rng.random()
             if roll < blocked_rate:
-                status, resolved = "Blocked", None
+                status = "Blocked"
+                started = earliest_start + timedelta(hours=float(rng.uniform(2, 72)))
             elif roll < blocked_rate + completion_rate:
                 status = "Done"
-                # Resolve somewhere between creation and a little past sprint end,
-                # so cycle time has a realistic spread rather than a constant.
-                span = (sprint_end - created).total_seconds()
-                resolved = created + timedelta(
-                    seconds=float(rng.uniform(span * 0.15, span * 1.10))
+                started = earliest_start + timedelta(
+                    days=float(rng.uniform(0, cfg.sprint_days * 0.55))
+                )
+                # Finishes some time after starting, occasionally spilling a
+                # little past sprint end, so cycle time has a realistic spread.
+                window = (
+                    sprint_end
+                    + timedelta(days=cfg.sprint_days * 0.15)
+                    - started
+                ).total_seconds()
+                resolved = started + timedelta(
+                    seconds=float(rng.uniform(0.10, 1.0) * max(window, 3600.0))
                 )
             else:
                 status = "To Do" if rng.random() < 0.4 else "In Progress"
-                resolved = None
+                if status == "In Progress":
+                    started = earliest_start + timedelta(
+                        hours=float(rng.uniform(2, 72))
+                    )
                 # Applied to every unresolved issue, not gated behind the completion
                 # branch — that gating was why the nominal rate never materialised.
                 if rng.random() < overdue_rate:
@@ -205,25 +245,6 @@ def generate(cfg: Config) -> tuple[pd.DataFrame, dict]:
                 or (anomaly.type == "overdue_pileup" and is_overdue)
             ):
                 anomaly.issue_keys.append(key)
-
-            # When work actually began, as distinct from when the issue was
-            # raised. Real Jira CSV exports rarely carry this — it lives in the
-            # status-change history — but without it cycle time cannot be
-            # separated from lead time, and FR-B3's "<1% error" acceptance
-            # criterion has nothing to be checked against. Emitting it keeps the
-            # two metrics genuinely distinct; ingestion degrades gracefully when
-            # a real upload lacks the column.
-            started = None
-            if status == "Done":
-                # Some time in the backlog first, then work starts.
-                started = created + timedelta(
-                    seconds=float(
-                        rng.uniform(0.05, 0.50)
-                        * (resolved - created).total_seconds()
-                    )
-                )
-            elif status in ("In Progress", "Blocked"):
-                started = created + timedelta(hours=float(rng.uniform(2, 72)))
 
             n_labels = int(rng.integers(0, 3))
             labels = rng.choice(LABEL_POOL, size=n_labels, replace=False).tolist()

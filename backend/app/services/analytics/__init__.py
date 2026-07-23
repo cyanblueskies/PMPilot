@@ -4,6 +4,12 @@ No FastAPI and no LLM imports. Every function takes data and returns values
 (.claude/rules/architecture.md).
 """
 
+from app.services.analytics.burndown import (
+    BurndownPoint,
+    BurndownReport,
+    SprintBurndown,
+    compute_burndown,
+)
 from app.services.analytics.frame import COLUMNS, ensure_frame, load_project_frame
 from app.services.analytics.kpi import (
     DefectReport,
@@ -27,6 +33,10 @@ __all__ = [
     "compute_defect_density",
     "compute_cycle_time",
     "compute_lead_time",
+    "compute_burndown",
+    "BurndownReport",
+    "SprintBurndown",
+    "BurndownPoint",
     "VelocityReport",
     "SprintVelocity",
     "DefectReport",
