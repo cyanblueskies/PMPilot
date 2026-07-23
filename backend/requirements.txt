@@ -25,6 +25,8 @@ pydantic-settings==2.14.2
 pandas==3.0.3
 numpy==2.4.6
 python-dateutil==2.9.0.post0
+# XLSX reading for FR-A1. Formulas are read as text; nothing is evaluated.
+openpyxl==3.1.5
 
 # --- Test ---
 pytest==9.1.1
