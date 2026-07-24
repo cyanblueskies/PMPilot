@@ -102,6 +102,7 @@ def test_dashboard_returns_every_kpi_block(project_id):
         "lead_time",
         "defects",
         "burndown",
+        "workload",
         "anomalies",
     }
     assert body["project"]["issue_count"] > 0
