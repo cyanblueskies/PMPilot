@@ -24,10 +24,12 @@ from app.services.analytics.kpi import (
     DefectReport,
     DurationReport,
     VelocityReport,
+    WorkloadReport,
     compute_cycle_time,
     compute_defect_density,
     compute_lead_time,
     compute_velocity,
+    compute_workload,
 )
 from app.services.anomaly import DetectedAnomaly, detect_all
 
@@ -44,6 +46,7 @@ class ProjectAnalysis:
     lead_time: DurationReport
     defects: DefectReport
     burndown: BurndownReport
+    workload: WorkloadReport
     anomalies: list[DetectedAnomaly] = field(default_factory=list)
 
     def to_dict(self, include_series: bool = True) -> dict:
@@ -77,6 +80,7 @@ class ProjectAnalysis:
             "lead_time": self.lead_time.to_dict(),
             "defects": self.defects.to_dict(),
             "burndown": burndown,
+            "workload": self.workload.to_dict(),
             "anomalies": [a.to_dict() for a in self.anomalies],
         }
 
@@ -96,6 +100,7 @@ def analyse(
         lead_time=compute_lead_time(frame),
         defects=compute_defect_density(frame),
         burndown=compute_burndown(frame),
+        workload=compute_workload(frame),
         anomalies=detect_all(frame),
     )
 
@@ -182,6 +187,19 @@ def _snapshot_rows(
 
     for sprint in analysis.burndown.sprints:
         add("scope_added", sprint.scope_added, sprint.sprint, final_scope=sprint.final_scope)
+
+    # Per-assignee, so sprint_id stays null. Preserved as instrumentation like
+    # every other metric, not only rendered (.claude/rules/data-model.md).
+    for person in analysis.workload.people:
+        add(
+            "workload_issues",
+            person.issue_count,
+            assignee=person.assignee,
+            story_points=person.story_points,
+            done=person.done_count,
+            blocked=person.blocked_count,
+            open=person.open_count,
+        )
 
     return rows
 

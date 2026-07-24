@@ -328,3 +328,87 @@ def compute_defect_density(frame: pd.DataFrame) -> DefectReport:
         ),
         by_sprint=by_sprint,
     )
+
+
+UNASSIGNED = "Unassigned"
+
+
+@dataclass
+class AssigneeWorkload:
+    assignee: str
+    issue_count: int
+    # Points on assigned issues. Reported alongside issue_count rather than
+    # instead of it: an unestimated issue is one issue carrying zero points, so
+    # a person with many issues but few points is doing unestimated work, not
+    # light work — the two numbers together say which.
+    story_points: float
+    done_count: int
+    blocked_count: int
+    # Not done and not blocked. done/blocked/open partition the issues because
+    # status is a single value and the done and blocked vocabularies are
+    # disjoint.
+    open_count: int
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+
+@dataclass
+class WorkloadReport:
+    people: list[AssigneeWorkload] = field(default_factory=list)
+    # False when no issue carries an assignee — work cannot be attributed to
+    # anyone, which is different from a team of one. Same available/reason shape
+    # as the other metrics so a consumer can say "not measurable from this
+    # export" rather than showing an empty chart.
+    available: bool = True
+    unavailable_reason: str | None = None
+
+    def to_dict(self) -> dict:
+        return {
+            "people": [p.to_dict() for p in self.people],
+            "available": self.available,
+            "unavailable_reason": self.unavailable_reason,
+        }
+
+
+def compute_workload(frame: pd.DataFrame) -> WorkloadReport:
+    """FR-B6 — issues and points carried per assignee.
+
+    Unassigned issues are kept as their own bucket rather than dropped: work
+    that no one owns is a workload signal, not a gap in the data.
+    """
+    if frame.empty:
+        return WorkloadReport(
+            available=False, unavailable_reason="No issues to attribute."
+        )
+    if frame["assignee"].notna().sum() == 0:
+        return WorkloadReport(
+            available=False,
+            unavailable_reason=(
+                "No assignee data: work cannot be attributed to people."
+            ),
+        )
+
+    working = frame.copy()
+    working["_assignee"] = working["assignee"].fillna(UNASSIGNED)
+    working["_done"] = is_done(working)
+    working["_blocked"] = is_blocked(working)
+
+    people: list[AssigneeWorkload] = []
+    for name, rows in working.groupby("_assignee", sort=False):
+        done = int(rows["_done"].sum())
+        blocked = int(rows["_blocked"].sum())
+        total = int(len(rows))
+        people.append(
+            AssigneeWorkload(
+                assignee=str(name),
+                issue_count=total,
+                story_points=round(float(rows["story_points"].sum(skipna=True)), 1),
+                done_count=done,
+                blocked_count=blocked,
+                open_count=total - done - blocked,
+            )
+        )
+
+    people.sort(key=lambda p: (-p.issue_count, p.assignee))
+    return WorkloadReport(people=people)
