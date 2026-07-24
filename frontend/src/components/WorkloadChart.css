@@ -1,0 +1,151 @@
+.workload {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* --- Legend -------------------------------------------------------------- */
+
+.workload__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.workload__key {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.workload__swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex: none;
+}
+
+.workload__key--done {
+  background: var(--ok);
+}
+
+.workload__key--open {
+  background: var(--accent);
+}
+
+.workload__key--blocked {
+  background: var(--bad);
+}
+
+/* --- Rows ---------------------------------------------------------------- */
+
+.workload__rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.workload__row {
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.workload__name {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.workload__track {
+  display: flex;
+  height: 20px;
+  /* A 2px surface gap between segments, per the mark spec. */
+  gap: 2px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.workload__seg {
+  height: 100%;
+  transition: opacity 100ms ease;
+}
+
+.workload__seg:hover {
+  opacity: 0.82;
+}
+
+.workload__seg--done {
+  background: var(--ok);
+}
+
+.workload__seg--open {
+  background: var(--accent);
+}
+
+.workload__seg--blocked {
+  background: var(--bad);
+}
+
+.workload__figures {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.workload__points {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+/* --- Readout ------------------------------------------------------------- */
+
+.workload__readout {
+  font-size: 12px;
+  color: var(--text-faint);
+  min-height: 16px;
+}
+
+/* --- Unavailable --------------------------------------------------------- */
+
+.workload-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px 18px;
+}
+
+.workload-empty__tag {
+  align-self: flex-start;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.workload-empty__text {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+@media (width <= 560px) {
+  .workload__row {
+    grid-template-columns: 70px 1fr auto;
+    gap: 8px;
+  }
+}

@@ -102,6 +102,23 @@ export interface DefectReport {
   by_sprint: DefectBySprint[]
 }
 
+export interface AssigneeWorkload {
+  assignee: string
+  issue_count: number
+  story_points: number
+  done_count: number
+  blocked_count: number
+  /** Not done and not blocked; done/blocked/open partition issue_count. */
+  open_count: number
+}
+
+export interface WorkloadReport {
+  people: AssigneeWorkload[]
+  /** False when no issue carries an assignee — not measurable, not empty. */
+  available: boolean
+  unavailable_reason: string | null
+}
+
 export interface BurndownPoint {
   date: string
   scope_points: number
@@ -148,6 +165,7 @@ export interface Dashboard {
   lead_time: DurationReport
   defects: DefectReport
   burndown: BurndownReport
+  workload: WorkloadReport
   anomalies: DetectedAnomaly[]
 }
 

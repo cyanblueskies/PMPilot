@@ -31,6 +31,7 @@ import type { KpiTileProps } from '../components/KpiTile'
 import { QueryPanel } from '../components/QueryPanel'
 import { ReportPanel } from '../components/ReportPanel'
 import { VelocityChart } from '../components/VelocityChart'
+import { WorkloadChart } from '../components/WorkloadChart'
 import { useAsync } from '../hooks/useAsync'
 import { dateTime, days, num, percent } from '../lib/format'
 import './DashboardPage.css'
@@ -200,6 +201,20 @@ export function DashboardPage() {
                   flagged={flaggedSprints(data.anomalies)}
                 />
               </div>
+            )}
+
+            {/* Guarded against a backend serving an older payload without the
+                workload field: a stale server degrades to no section rather
+                than crashing the whole dashboard. */}
+            {data.workload && (
+              <section className="section dash__workload">
+                <div className="section__head">
+                  <h3 className="section__title">Workload distribution</h3>
+                </div>
+                <div className="card">
+                  <WorkloadChart report={data.workload} />
+                </div>
+              </section>
             )}
 
             <section className="section dash__anomalies">
