@@ -1,16 +1,9 @@
+import { Link } from 'react-router-dom'
+
 import type { ProjectStatus } from '../api/types'
+import { dateTime } from '../lib/format'
 import { IngestPill } from './StatusPill'
 import './ProjectList.css'
-
-function formatDate(iso: string): string {
-  const date = new Date(iso)
-  return Number.isNaN(date.getTime())
-    ? iso
-    : date.toLocaleString(undefined, {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      })
-}
 
 export function ProjectList({ projects }: { projects: ProjectStatus[] }) {
   if (projects.length === 0) {
@@ -26,25 +19,41 @@ export function ProjectList({ projects }: { projects: ProjectStatus[] }) {
 
   return (
     <ul className="projects">
-      {projects.map((project) => (
-        <li key={project.project_id} className="projects__row">
-          <div className="projects__main">
-            <span className="projects__name">{project.name}</span>
-            <IngestPill status={project.status} />
-          </div>
+      {projects.map((project) => {
+        const body = (
+          <>
+            <div className="projects__main">
+              <span className="projects__name">{project.name}</span>
+              <IngestPill status={project.status} />
+            </div>
 
-          <div className="projects__meta numeric">
-            <span>{project.issue_count.toLocaleString()} issues</span>
-            <span className="projects__dot">·</span>
-            <span>{formatDate(project.created_at)}</span>
-          </div>
+            <div className="projects__meta numeric">
+              <span>{project.issue_count.toLocaleString()} issues</span>
+              <span className="projects__dot">·</span>
+              <span>{dateTime(project.created_at)}</span>
+            </div>
+          </>
+        )
 
-          {/* Ingestion runs in a background task, so a failure has no request
-              to fail. Surfacing the stored reason here is the only way a user
-              learns why a project never became ready. */}
-          {project.error && <p className="projects__error">{project.error}</p>}
-        </li>
-      ))}
+        return (
+          <li key={project.project_id} className="projects__row">
+            {/* Only a ready project has a dashboard to open. Linking to one
+                that is still ingesting would land on a 409. */}
+            {project.status === 'ready' ? (
+              <Link to={`/projects/${project.project_id}`} className="projects__link">
+                {body}
+              </Link>
+            ) : (
+              <div className="projects__link projects__link--inert">{body}</div>
+            )}
+
+            {/* Ingestion runs in a background task, so a failure has no request
+                to fail. Surfacing the stored reason here is the only way a user
+                learns why a project never became ready. */}
+            {project.error && <p className="projects__error">{project.error}</p>}
+          </li>
+        )
+      })}
     </ul>
   )
 }

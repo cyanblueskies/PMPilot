@@ -1,0 +1,74 @@
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--gap);
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 16px 18px;
+  min-height: 116px;
+}
+
+.kpi__label {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.kpi__value {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-top: 4px;
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.kpi__unit {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0;
+}
+
+.kpi__detail {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.kpi__caveat {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--warn);
+}
+
+/* --- Empty and unavailable ----------------------------------------------- */
+
+.kpi__empty {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.kpi__empty-tag {
+  align-self: flex-start;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.kpi__empty-reason {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}

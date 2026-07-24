@@ -1,0 +1,38 @@
+.crumb {
+  display: inline-block;
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.crumb:hover {
+  color: var(--accent);
+}
+
+.dash__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--gap);
+  flex-wrap: wrap;
+  margin-bottom: var(--gap);
+}
+
+.dash__title {
+  font-size: 20px;
+}
+
+.dash__meta {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* The definitions are not decoration: cycle time and lead time are routinely
+   confused, and the backend states exactly which timestamps it subtracted. */
+.dash__definitions {
+  margin: 14px 0 0;
+  font-size: 12px;
+  color: var(--text-faint);
+}

@@ -1,12 +1,12 @@
 import { useCallback } from 'react'
+import { Link, Route, Routes } from 'react-router-dom'
 
-import { getHealth, listProjects } from './api/client'
-import { Async } from './components/Async'
-import { ProjectList } from './components/ProjectList'
+import { getHealth } from './api/client'
 import { StatusPill } from './components/StatusPill'
 import type { Tone } from './components/StatusPill'
-import { UploadPanel } from './components/UploadPanel'
 import { useAsync } from './hooks/useAsync'
+import { DashboardPage } from './pages/DashboardPage'
+import { ProjectsPage } from './pages/ProjectsPage'
 import './App.css'
 
 /**
@@ -32,59 +32,37 @@ function BackendStatus() {
 }
 
 export default function App() {
-  const [projects, reloadProjects] = useAsync(
-    useCallback(() => listProjects(), []),
-  )
-
   return (
     <div className="shell">
       <header className="shell__header">
-        <div className="brand">
+        <Link to="/" className="brand">
           <span className="brand__name">PMPilot</span>
           <span className="brand__tagline">
             Decision support for agile projects
           </span>
-        </div>
+        </Link>
         <BackendStatus />
       </header>
 
       <main className="shell__main">
-        <section className="section">
-          <div className="section__head">
-            <h2 className="section__title">New dataset</h2>
-          </div>
-          {/* Refreshing the list on completion is the only link between the
-              two panels: a project appears here because ingestion finished,
-              not because the upload request returned. */}
-          <UploadPanel onIngested={reloadProjects} />
-        </section>
-
-        <div className="section__head">
-          <h2 className="section__title">
-            Projects
-            {projects.status === 'ready' && (
-              <span className="section__count">{projects.data.length}</span>
-            )}
-          </h2>
-          <button
-            type="button"
-            className="button"
-            onClick={reloadProjects}
-            disabled={projects.status === 'loading'}
-          >
-            Refresh
-          </button>
-        </div>
-
-        <div className="card">
-          <Async
-            state={projects}
-            onRetry={reloadProjects}
-            loadingLabel="Loading projects…"
-          >
-            {(data) => <ProjectList projects={data} />}
-          </Async>
-        </div>
+        <Routes>
+          <Route path="/" element={<ProjectsPage />} />
+          {/* A project's dashboard is addressable so it can be linked to
+              directly — in a report, or when handing a URL to a user-testing
+              participant. */}
+          <Route path="/projects/:projectId" element={<DashboardPage />} />
+          <Route
+            path="*"
+            element={
+              <div className="async">
+                <span className="async__title">Page not found</span>
+                <Link to="/" className="button">
+                  Back to projects
+                </Link>
+              </div>
+            }
+          />
+        </Routes>
       </main>
     </div>
   )

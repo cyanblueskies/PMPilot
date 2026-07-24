@@ -53,6 +53,13 @@ export interface VelocityReport {
   median: number | null
   stdev: number | null
   has_unestimated_work: boolean
+  /**
+   * False when no completed issue anywhere carried an estimate. Summing an
+   * empty column yields 0.0, and rendering that would claim the team delivered
+   * nothing rather than that the export cannot measure delivery.
+   */
+  available: boolean
+  unavailable_reason: string | null
 }
 
 export interface DurationBySprint {
