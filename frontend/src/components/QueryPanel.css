@@ -1,0 +1,124 @@
+.query {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.query__form {
+  display: flex;
+  gap: 8px;
+}
+
+.query__input {
+  flex: 1;
+  padding: 9px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+}
+
+.query__input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+
+.query__input::placeholder {
+  color: var(--text-faint);
+}
+
+/* --- Suggestions --------------------------------------------------------- */
+
+.query__suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.query__suggestions-label {
+  font-size: 12px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.query__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.query__chip {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 13px;
+  transition: border-color 100ms ease, color 100ms ease, background 100ms ease;
+}
+
+.query__chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* --- Pending ------------------------------------------------------------- */
+
+.query__pending {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.query__spinner {
+  width: 13px;
+  height: 13px;
+  border: 2px solid var(--border-strong);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
+  flex: none;
+}
+
+/* --- Answer -------------------------------------------------------------- */
+
+.query__answer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.query__answer-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+/* A refusal is not an error — it is a neutral, helpful state. */
+.query__answer--refused {
+  background: var(--surface);
+}
+
+/* Service unavailable: warning tone, not danger. The system still works. */
+.query__answer--down {
+  background: var(--warn-soft);
+  border-color: transparent;
+}
+
+.query__answer--down .query__answer-text {
+  color: var(--warn);
+  font-size: 14px;
+}

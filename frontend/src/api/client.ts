@@ -14,7 +14,9 @@ import type {
   Dashboard,
   Health,
   ProjectStatus,
+  QueryResponse,
   StoredAnomaly,
+  SupportedQuestion,
   UploadAccepted,
 } from './types'
 
@@ -102,4 +104,19 @@ export function uploadDataset(file: File): Promise<UploadAccepted> {
   body.append('file', file)
   // No Content-Type header: the browser has to set the multipart boundary.
   return request<UploadAccepted>('/datasets/upload', { method: 'POST', body })
+}
+
+export function getSupportedQuestions(): Promise<SupportedQuestion[]> {
+  return request<SupportedQuestion[]>('/query/supported')
+}
+
+export function askQuestion(
+  projectId: number,
+  question: string,
+): Promise<QueryResponse> {
+  return request<QueryResponse>(`/projects/${projectId}/query`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question }),
+  })
 }

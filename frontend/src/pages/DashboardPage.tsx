@@ -27,6 +27,7 @@ import { AnomalyPanel } from '../components/AnomalyPanel'
 import { Async } from '../components/Async'
 import { KpiRow, KpiTile } from '../components/KpiTile'
 import type { KpiTileProps } from '../components/KpiTile'
+import { QueryPanel } from '../components/QueryPanel'
 import { VelocityChart } from '../components/VelocityChart'
 import { useAsync } from '../hooks/useAsync'
 import { dateTime, days, num, percent } from '../lib/format'
@@ -198,6 +199,13 @@ export function DashboardPage() {
                 </h3>
               </div>
               <AnomalyPanel anomalies={data.anomalies} />
+            </section>
+
+            <section className="section dash__query">
+              <div className="section__head">
+                <h3 className="section__title">Ask</h3>
+              </div>
+              <QueryPanel projectId={id} />
             </section>
           </>
         )}
