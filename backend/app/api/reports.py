@@ -20,8 +20,13 @@ from app.models.project import INGEST_READY, Project
 from app.schemas.report import ReportOut, ReportRequested, ReportSummary
 from app.services.analytics import load_project_frame
 from app.services.analytics.pipeline import analyse
+from app.services.export import report_to_docx
 from app.services.llm.strategies import GROUNDED, NAIVE
 from app.services.llm.summary import generate_narrative
+
+DOCX_MEDIA_TYPE = (
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+)
 
 router = APIRouter(tags=["reports"])
 
@@ -184,23 +189,50 @@ def get_report(
 
 @router.get(
     "/projects/{project_id}/report/{report_id}/export",
-    summary="Download a report as Markdown",
+    summary="Download a report as Markdown or Word (FR-F4)",
 )
 def export_report(
-    project_id: int, report_id: int, session: Session = Depends(get_session)
+    project_id: int,
+    report_id: int,
+    format: str = Query(
+        "md",
+        description="Export format: 'md' (Markdown) or 'docx' (Word).",
+        pattern="^(md|docx)$",
+    ),
+    session: Session = Depends(get_session),
 ) -> StreamingResponse:
     report = _load_report(session, project_id, report_id)
+    generated_at = report.created_at.isoformat()
+
+    if format == "docx":
+        data = report_to_docx(
+            title=report.title,
+            strategy=report.prompting_strategy,
+            generated_at=generated_at,
+            content=report.content,
+        )
+        return StreamingResponse(
+            io.BytesIO(data),
+            media_type=DOCX_MEDIA_TYPE,
+            headers={
+                "Content-Disposition": (
+                    f'attachment; filename="pmpilot-report-{report.id}.docx"'
+                )
+            },
+        )
 
     document = (
         f"# {report.title}\n\n"
-        f"Generated: {report.created_at.isoformat()}\n"
+        f"Generated: {generated_at}\n"
         f"Prompting strategy: {report.prompting_strategy}\n\n"
         f"{report.content}"
     )
-    filename = f"pmpilot-report-{report.id}.md"
-
     return StreamingResponse(
         io.BytesIO(document.encode("utf-8")),
         media_type="text/markdown",
-        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        headers={
+            "Content-Disposition": (
+                f'attachment; filename="pmpilot-report-{report.id}.md"'
+            )
+        },
     )
