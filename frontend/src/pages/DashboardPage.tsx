@@ -28,6 +28,7 @@ import { Async } from '../components/Async'
 import { KpiRow, KpiTile } from '../components/KpiTile'
 import type { KpiTileProps } from '../components/KpiTile'
 import { QueryPanel } from '../components/QueryPanel'
+import { ReportPanel } from '../components/ReportPanel'
 import { VelocityChart } from '../components/VelocityChart'
 import { useAsync } from '../hooks/useAsync'
 import { dateTime, days, num, percent } from '../lib/format'
@@ -206,6 +207,13 @@ export function DashboardPage() {
                 <h3 className="section__title">Ask</h3>
               </div>
               <QueryPanel projectId={id} />
+            </section>
+
+            <section className="section dash__report">
+              <div className="section__head">
+                <h3 className="section__title">Executive summary</h3>
+              </div>
+              <ReportPanel projectId={id} />
             </section>
           </>
         )}

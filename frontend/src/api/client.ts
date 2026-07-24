@@ -15,6 +15,9 @@ import type {
   Health,
   ProjectStatus,
   QueryResponse,
+  Report,
+  ReportRequested,
+  ReportSummary,
   StoredAnomaly,
   SupportedQuestion,
   UploadAccepted,
@@ -119,4 +122,32 @@ export function askQuestion(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ question }),
   })
+}
+
+export type ReportStrategy = 'grounded' | 'naive'
+
+export function generateReport(
+  projectId: number,
+  strategy: ReportStrategy,
+): Promise<ReportRequested> {
+  return request<ReportRequested>(
+    `/projects/${projectId}/report/generate?strategy=${strategy}`,
+    { method: 'POST' },
+  )
+}
+
+export function listReports(projectId: number): Promise<ReportSummary[]> {
+  return request<ReportSummary[]>(`/projects/${projectId}/reports`)
+}
+
+export function getReport(
+  projectId: number,
+  reportId: number,
+): Promise<Report> {
+  return request<Report>(`/projects/${projectId}/report/${reportId}`)
+}
+
+/** The export endpoint serves a Markdown download; a plain link triggers it. */
+export function reportExportUrl(projectId: number, reportId: number): string {
+  return `/api/projects/${projectId}/report/${reportId}/export`
 }
