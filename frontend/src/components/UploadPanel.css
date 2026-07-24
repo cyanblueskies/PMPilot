@@ -1,0 +1,119 @@
+.upload {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+/* --- Drop zone ----------------------------------------------------------- */
+
+.upload__drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 28px 20px;
+  border: 1.5px dashed var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.upload__drop:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.upload__drop--over {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.upload__drop--busy {
+  cursor: progress;
+  opacity: 0.65;
+}
+
+/* Visually hidden, not display:none — the input must stay focusable. */
+.upload__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.upload__input:focus-visible + .upload__headline {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
+.upload__headline {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.upload__hint {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* --- Status -------------------------------------------------------------- */
+
+.upload__result {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.upload__note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.upload__spinner {
+  width: 13px;
+  height: 13px;
+  border: 2px solid var(--border-strong);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
+  flex: none;
+}
+
+.upload__banner {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+
+.upload__banner--ok {
+  background: var(--ok-soft);
+  color: var(--ok);
+}
+
+.upload__banner--bad {
+  background: var(--bad-soft);
+  color: var(--bad);
+}
+
+.upload__detail {
+  margin: 4px 0 0;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.upload__detail--mono {
+  font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+  font-size: 12px;
+}

@@ -5,6 +5,7 @@ import { Async } from './components/Async'
 import { ProjectList } from './components/ProjectList'
 import { StatusPill } from './components/StatusPill'
 import type { Tone } from './components/StatusPill'
+import { UploadPanel } from './components/UploadPanel'
 import { useAsync } from './hooks/useAsync'
 import './App.css'
 
@@ -48,6 +49,16 @@ export default function App() {
       </header>
 
       <main className="shell__main">
+        <section className="section">
+          <div className="section__head">
+            <h2 className="section__title">New dataset</h2>
+          </div>
+          {/* Refreshing the list on completion is the only link between the
+              two panels: a project appears here because ingestion finished,
+              not because the upload request returned. */}
+          <UploadPanel onIngested={reloadProjects} />
+        </section>
+
         <div className="section__head">
           <h2 className="section__title">
             Projects

@@ -44,6 +44,10 @@
   padding: var(--gap-lg) 24px 64px;
 }
 
+.section {
+  margin-bottom: var(--gap-lg);
+}
+
 .section__head {
   display: flex;
   align-items: center;
