@@ -201,15 +201,26 @@ export function ReportPanel({ projectId }: { projectId: number }) {
                   ` · query log #${state.report.query_log_id}`}
               </span>
             </div>
-            {/* A plain link: the endpoint serves the file with an attachment
-                disposition, so the browser downloads rather than navigates. */}
-            <a
-              className="button"
-              href={reportExportUrl(projectId, state.report.report_id)}
-              download
-            >
-              Export .md
-            </a>
+            {/* Plain links: the endpoint serves each file with an attachment
+                disposition, so the browser downloads rather than navigates.
+                Word (FR-F4) for a dissertation appendix; Markdown for a diff or
+                a paste into another tool. */}
+            <div className="report__exports">
+              <a
+                className="button"
+                href={reportExportUrl(projectId, state.report.report_id, 'docx')}
+                download
+              >
+                Export .docx
+              </a>
+              <a
+                className="button"
+                href={reportExportUrl(projectId, state.report.report_id, 'md')}
+                download
+              >
+                .md
+              </a>
+            </div>
           </header>
           <Markdown source={state.report.content} />
         </article>

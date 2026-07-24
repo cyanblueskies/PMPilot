@@ -107,6 +107,12 @@
   font-variant-numeric: tabular-nums;
 }
 
+.report__exports {
+  display: flex;
+  gap: 8px;
+  flex: none;
+}
+
 /* --- History ------------------------------------------------------------- */
 
 .report__history {

@@ -147,7 +147,11 @@ export function getReport(
   return request<Report>(`/projects/${projectId}/report/${reportId}`)
 }
 
-/** The export endpoint serves a Markdown download; a plain link triggers it. */
-export function reportExportUrl(projectId: number, reportId: number): string {
-  return `/api/projects/${projectId}/report/${reportId}/export`
+/** The export endpoint serves the file as a download; a plain link triggers it. */
+export function reportExportUrl(
+  projectId: number,
+  reportId: number,
+  format: 'md' | 'docx' = 'md',
+): string {
+  return `/api/projects/${projectId}/report/${reportId}/export?format=${format}`
 }
