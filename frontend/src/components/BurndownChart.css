@@ -1,0 +1,207 @@
+.burndown {
+  position: relative;
+  margin: 0;
+  padding: 16px 18px 12px;
+}
+
+.burndown__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--gap);
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.burndown__caption {
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.burndown__flag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--bad-soft);
+  color: var(--bad);
+}
+
+.burndown__facts {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.burndown__added {
+  color: var(--warn);
+  font-weight: 500;
+}
+
+/* --- Sprint selector ----------------------------------------------------- */
+
+.burndown__selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.burndown__sprint {
+  min-width: 34px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.burndown__sprint:hover {
+  border-color: var(--accent);
+}
+
+.burndown__sprint--on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+/* A flagged sprint keeps a danger dot even when not selected, so the reader
+   knows which sprints are worth opening. */
+.burndown__sprint--flagged:not(.burndown__sprint--on) {
+  color: var(--bad);
+  border-color: var(--bad);
+}
+
+/* --- SVG ----------------------------------------------------------------- */
+
+.burndown__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+  touch-action: none;
+}
+
+.burndown__grid {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.burndown__ytick,
+.burndown__xtick {
+  fill: var(--text-faint);
+  font-size: 11px;
+}
+
+.burndown__ideal {
+  fill: none;
+  stroke: var(--text-faint);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+}
+
+.burndown__scope {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-width: 1.5;
+  opacity: 0.7;
+}
+
+.burndown__remaining {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.burndown__crosshair {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.burndown__dot--remaining {
+  fill: var(--accent);
+}
+
+.burndown__dot--scope {
+  fill: var(--text-muted);
+}
+
+/* --- Legend -------------------------------------------------------------- */
+
+.burndown__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 8px;
+  padding-left: 4px;
+}
+
+.burndown__key {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.burndown__key--remaining {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+}
+
+.burndown__key--ideal {
+  stroke: var(--text-faint);
+  stroke-width: 1.5;
+}
+
+.burndown__key--scope {
+  stroke: var(--text-muted);
+  stroke-width: 1.5;
+}
+
+/* --- Tooltip ------------------------------------------------------------- */
+
+.burndown__tooltip {
+  position: absolute;
+  top: 70px;
+  right: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 8px 11px;
+  border-radius: var(--radius-sm);
+  background: var(--text);
+  color: var(--bg);
+  box-shadow: var(--shadow);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.burndown__tt-date {
+  font-size: 11px;
+  opacity: 0.75;
+  margin-bottom: 1px;
+}
+
+.burndown__tt-row {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.burndown__tt-row strong {
+  font-size: 14px;
+}
+
+.burndown__tt-muted {
+  opacity: 0.7;
+}

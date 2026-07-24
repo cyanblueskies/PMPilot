@@ -25,6 +25,7 @@ import type {
 } from '../api/types'
 import { AnomalyPanel } from '../components/AnomalyPanel'
 import { Async } from '../components/Async'
+import { BurndownChart } from '../components/BurndownChart'
 import { KpiRow, KpiTile } from '../components/KpiTile'
 import type { KpiTileProps } from '../components/KpiTile'
 import { QueryPanel } from '../components/QueryPanel'
@@ -124,8 +125,10 @@ export function DashboardPage() {
   const { projectId } = useParams<{ projectId: string }>()
   const id = Number(projectId)
 
+  // Series included: the burndown chart needs the per-day points. The KPI tiles
+  // and velocity ignore them, so this is the only consumer of the extra data.
   const [state, reload] = useAsync(
-    useCallback(() => getDashboard(id, false), [id]),
+    useCallback(() => getDashboard(id, true), [id]),
   )
 
   return (
@@ -185,6 +188,15 @@ export function DashboardPage() {
                 <VelocityChart
                   sprints={data.velocity.sprints}
                   median={data.velocity.median}
+                  flagged={flaggedSprints(data.anomalies)}
+                />
+              </div>
+            )}
+
+            {data.burndown.available && (
+              <div className="card dash__chart">
+                <BurndownChart
+                  sprints={data.burndown.sprints}
                   flagged={flaggedSprints(data.anomalies)}
                 />
               </div>
