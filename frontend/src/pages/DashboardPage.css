@@ -36,3 +36,11 @@
   font-size: 12px;
   color: var(--text-faint);
 }
+
+.dash__chart {
+  margin-top: var(--gap);
+}
+
+.dash__anomalies {
+  margin-top: var(--gap-lg);
+}

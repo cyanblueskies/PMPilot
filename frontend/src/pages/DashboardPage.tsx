@@ -19,12 +19,15 @@ import { Link, useParams } from 'react-router-dom'
 import { getDashboard } from '../api/client'
 import type {
   DefectReport,
+  DetectedAnomaly,
   DurationReport,
   VelocityReport,
 } from '../api/types'
+import { AnomalyPanel } from '../components/AnomalyPanel'
 import { Async } from '../components/Async'
 import { KpiRow, KpiTile } from '../components/KpiTile'
 import type { KpiTileProps } from '../components/KpiTile'
+import { VelocityChart } from '../components/VelocityChart'
 import { useAsync } from '../hooks/useAsync'
 import { dateTime, days, num, percent } from '../lib/format'
 import './DashboardPage.css'
@@ -106,6 +109,15 @@ function defectTile(report: DefectReport): KpiTileProps {
   }
 }
 
+/** Sprint names carrying a velocity_drop, so the chart can emphasise them. */
+function flaggedSprints(anomalies: DetectedAnomaly[]): Set<string> {
+  return new Set(
+    anomalies
+      .filter((a) => a.anomaly_type === 'velocity_drop')
+      .map((a) => a.sprint),
+  )
+}
+
 export function DashboardPage() {
   const { projectId } = useParams<{ projectId: string }>()
   const id = Number(projectId)
@@ -165,6 +177,28 @@ export function DashboardPage() {
             <p className="dash__definitions">
               {data.cycle_time.definition} · {data.lead_time.definition}
             </p>
+
+            {data.velocity.available && (
+              <div className="card dash__chart">
+                <VelocityChart
+                  sprints={data.velocity.sprints}
+                  median={data.velocity.median}
+                  flagged={flaggedSprints(data.anomalies)}
+                />
+              </div>
+            )}
+
+            <section className="section dash__anomalies">
+              <div className="section__head">
+                <h3 className="section__title">
+                  Anomalies
+                  <span className="section__count">
+                    {data.anomalies.length}
+                  </span>
+                </h3>
+              </div>
+              <AnomalyPanel anomalies={data.anomalies} />
+            </section>
           </>
         )}
       </Async>

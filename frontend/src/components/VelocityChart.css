@@ -1,0 +1,119 @@
+.velocity {
+  position: relative;
+  margin: 0;
+  padding: 16px 18px 10px;
+}
+
+.velocity__caption {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.velocity__unit {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.velocity__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+/* --- Axis and reference line --------------------------------------------- */
+
+.velocity__axis {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.velocity__median {
+  stroke: var(--text-faint);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.velocity__median-label {
+  fill: var(--text-faint);
+  font-size: 11px;
+}
+
+/* --- Bars ---------------------------------------------------------------- */
+
+.velocity__bar {
+  fill: var(--accent);
+  opacity: 0.82;
+  transition: opacity 100ms ease;
+  cursor: default;
+}
+
+.velocity__bar:hover,
+.velocity__bar--active {
+  opacity: 1;
+}
+
+/* Emphasis: the flagged sprint carries the danger colour. It never stands
+   alone as the only signal — the anomaly panel below names it in words, and
+   the bar is directly labelled with its value. */
+.velocity__bar--flagged {
+  fill: var(--bad);
+  opacity: 0.9;
+}
+
+.velocity__bar:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.velocity__value {
+  fill: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.velocity__value--flagged {
+  fill: var(--bad);
+  font-weight: 600;
+}
+
+.velocity__tick {
+  fill: var(--text-muted);
+  font-size: 11px;
+}
+
+/* --- Tooltip ------------------------------------------------------------- */
+
+.velocity__tooltip {
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 10px));
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--text);
+  color: var(--bg);
+  box-shadow: var(--shadow);
+  white-space: nowrap;
+  z-index: 5;
+}
+
+.velocity__tt-name {
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+/* Value leads, label follows — the reader has the sprint, wants the number. */
+.velocity__tt-value {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.velocity__tt-detail {
+  font-size: 11px;
+  opacity: 0.75;
+}
