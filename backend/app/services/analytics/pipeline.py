@@ -131,9 +131,17 @@ def _snapshot_rows(
             unestimated_completed=sprint.unestimated_completed,
         )
 
-    add("velocity_mean", analysis.velocity.mean)
-    add("velocity_median", analysis.velocity.median)
-    add("velocity_stdev", analysis.velocity.stdev)
+    # Availability travels with the value, as it does for the duration metrics
+    # below: a NULL row means "not measurable", and the evaluation has to be
+    # able to tell that apart from a metric nobody wrote.
+    add(
+        "velocity_mean",
+        analysis.velocity.mean,
+        available=analysis.velocity.available,
+        unavailable_reason=analysis.velocity.unavailable_reason,
+    )
+    add("velocity_median", analysis.velocity.median, available=analysis.velocity.available)
+    add("velocity_stdev", analysis.velocity.stdev, available=analysis.velocity.available)
 
     for report in (analysis.cycle_time, analysis.lead_time):
         # Availability is recorded even when the metric could not be computed:

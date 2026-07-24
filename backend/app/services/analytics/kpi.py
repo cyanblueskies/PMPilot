@@ -62,6 +62,14 @@ class VelocityReport:
     # True when any sprint completed work that carried no estimate, so a
     # consumer can qualify the number instead of quoting it flat.
     has_unestimated_work: bool = False
+    # False when *no* completed issue anywhere carried an estimate. Summing an
+    # all-null column gives 0.0, and reporting that as the velocity states that
+    # the team delivered nothing — which is a different claim from "this export
+    # cannot measure delivery". The same distinction DurationReport draws, and
+    # it matters twice over: this object is also the grounding payload, so a
+    # false 0.0 here becomes a false statement the model is entitled to make.
+    available: bool = True
+    unavailable_reason: str | None = None
 
     def to_dict(self) -> dict:
         return {
@@ -70,6 +78,8 @@ class VelocityReport:
             "median": self.median,
             "stdev": self.stdev,
             "has_unestimated_work": self.has_unestimated_work,
+            "available": self.available,
+            "unavailable_reason": self.unavailable_reason,
         }
 
 
@@ -110,6 +120,23 @@ def compute_velocity(frame: pd.DataFrame) -> VelocityReport:
                 total_issues=int(len(rows)),
                 unestimated_completed=int(done["story_points"].isna().sum()),
             )
+        )
+
+    completed = sum(s.completed_issues for s in sprints)
+    estimated = completed - sum(s.unestimated_completed for s in sprints)
+
+    # Nothing completed at all is a real velocity of zero: the team delivered
+    # nothing, and saying so is true. Work completed with no estimate on any of
+    # it is the unmeasurable case.
+    if completed > 0 and estimated == 0:
+        return VelocityReport(
+            sprints=sprints,
+            has_unestimated_work=True,
+            available=False,
+            unavailable_reason=(
+                f"No story point estimates: all {completed} completed issues are "
+                "unestimated, so delivered points cannot be measured."
+            ),
         )
 
     values = pd.Series([s.velocity for s in sprints], dtype="float64")
